@@ -91,34 +91,34 @@ def get_statistics(text):
     node_totals = df['command'].value_counts()
     close_pairs = pairs[pairs.dist == 1]
     pair_counts = close_pairs.groupby(['from', 'to']).aggregate(len).rename(columns= {'dist': 'count'})
-    pair_counts = pair_counts.sort('count', ascending=False)
+    pair_counts = pair_counts.sort_values('count', ascending=False)
     return pair_counts, node_totals
 
 # https://gist.github.com/mwhite/7509467
 # Outputs history with bash and git aliases expanded.
 from subprocess import check_output
- 
+
 BASH_ALIASES = {}
 for line in check_output('bash -i -c "alias -p"', shell=True).split('\n'):
     if not line.strip():
         continue
     match = re.match(r"^alias (.+?)='(.+?)'\n*$", line)
     BASH_ALIASES[match.group(1)] = match.group(2)
- 
- 
+
+
 GIT_ALIASES = {}
 try:
     for line in check_output('git config --get-regexp alias*', shell=True).split('\n'):
         if not line.strip():
             continue
- 
+
         match = re.match(r"^alias\.(.+?) (.+)$", line)
         GIT_ALIASES[match.group(1)] = match.group(2)
 except:
     # git config will return a non-zero exit status if there are no aliases
     pass
- 
- 
+
+
 def expand(cmd):
     try:
         number, cmd = cmd.strip().split(' ', 1)
@@ -126,19 +126,19 @@ def expand(cmd):
     except ValueError:
         # empty line
         return cmd
- 
+
     for alias, expansion in BASH_ALIASES.items():
         cmd = re.sub(r"^" + re.escape(alias) + '(\s|$)', expansion + ' ', cmd)
     for alias, expansion in GIT_ALIASES.items():
         cmd = re.sub(r"^git " + re.escape(alias) + "(\s|$)", "git %s " % expansion, cmd)
- 
+
     return " %s  %s" % (number, cmd)
- 
- 
+
+
 if __name__ == "__main__":
 
     history = []
-    for line in sys.stdin.readlines(): 
+    for line in sys.stdin.readlines():
         line = expand(line)
         if line.find('  git ') > 0:
             parts = re.split(r'\s+', line.strip())
