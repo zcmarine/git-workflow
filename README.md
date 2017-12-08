@@ -10,7 +10,7 @@ How To Use
 -------------------
 
 ```
-mktmpenv
+mktmpenv -n
 pip install -r requirements.local.txt
 history | python git-workflow.py > graph.svg
 deactivate
