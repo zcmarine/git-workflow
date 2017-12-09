@@ -18,5 +18,3 @@ deactivate
 # Open the SVG file in a web browser with `open .` and then
 # right-clicking the file and choosing Open With > Google Chrome
 ```
-
-See ``templates/index.html`` or the Website for an explanation of how it works.
